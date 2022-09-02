@@ -1,0 +1,18 @@
+<Project>
+	<PropertyGroup>
+		<Version>22.09.02</Version>
+
+		<Product>Product</Product>
+		<Authors>Michael Helfenstein</Authors>
+		<Company>Noser Engineering AG</Company>
+		<Copyright>© Customer</Copyright>
+
+		<ImageName>image-name</ImageName>
+		<ImageRepository>registry.azurecr.io</ImageRepository>
+		<ImageMaintainer>"michael.helfenstein@noser.com"</ImageMaintainer>
+
+		<Deterministic>true</Deterministic>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>1701;1702;1591</NoWarn>
+	</PropertyGroup>
+</Project>

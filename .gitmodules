@@ -1,0 +1,4 @@
+[submodule "dotnet-lib"]
+	path = source/submodules/dotnet-lib
+	url = https://michael@dev.azure.com/company/project/_git/dotnet-lib
+	branch = master

@@ -1,0 +1,70 @@
+# Build Trigger
+trigger:
+  branches:
+    include:
+      - master
+  tags:
+    include:
+    - "*"
+
+# Pull Request Trigger
+pr:
+  branches:
+    include:
+      - master
+      - dev
+
+# image with docker
+pool:
+  vmImage: 'ubuntu-latest'
+
+parameters:
+- name: forcePushContainer
+  displayName: Push the container, even without tag
+  type: boolean
+  default: false
+
+variables:
+  buildConfiguration: 'Release'
+  # only push the container if the branch is tagged
+  pushContainer: ${{ or(startsWith(variables['Build.SourceBranch'], 'refs/tags/'), eq(parameters.forcePushContainer, true)) }} # use compile time expression when access parameters
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:
+  - job: Build
+    displayName: Build
+    steps:
+    - checkout: self
+      clean: true
+      submodules: recursive
+      persistCredentials: true
+    - task: PythonScript@0
+      displayName: Build Container image
+      inputs:
+        scriptSource: 'filePath'
+        scriptPath: 'source/docker-build.py'
+        arguments: '--testresultsCopy'
+        workingDirectory: '$(Build.SourcesDirectory)/source'
+    - task: PublishTestResults@2
+      displayName: Publish testresults
+      inputs:
+        testResultsFormat: 'VSTest'
+        testResultsFiles: '**/*.trx'
+        failTaskOnFailedTests: true
+    - task: Docker@2
+      displayName: Login to docker registry
+      condition: and(succeeded(), eq(variables['pushContainer'], 'true'))
+      inputs:
+        containerRegistry: 'regfchdevopsprod-eol'
+        command: 'login'
+        addPipelineData: false
+        addBaseImageData: false
+    - task: PythonScript@0
+      displayName: Push Container image with tags
+      condition: and(succeeded(), eq(variables['pushContainer'], 'true'))
+      inputs:
+        scriptSource: 'filePath'
+        scriptPath: 'source/docker-push.py'
+        workingDirectory: '$(Build.SourcesDirectory)/source'

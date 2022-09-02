@@ -1,0 +1,6 @@
+# Author: michael.helfenstein@noser.com
+# Updated: 2022-05-19
+# configure the pylint analyzer
+
+# Maximum number of characters on a single line.
+max-line-length=200

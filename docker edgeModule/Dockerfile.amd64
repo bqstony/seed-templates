@@ -1,0 +1,51 @@
+# Build Context is ./../../../
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-bullseye-slim AS base
+WORKDIR /app
+EXPOSE 80
+
+# Workaround healthcheck, because not respected by docker itself and the edgeAgent https://github.com/Azure/iotedge/issues/6358, https://github.com/moby/moby/pull/22719
+HEALTHCHECK --interval=60s --start-period=60s --timeout=100s --retries=1 CMD curl --fail http://localhost:80/health || (bash -c 'kill -s SIGTERM 1 && (sleep 20; kill -s SIGKILL 1)' && exit 1)
+
+# Install prerequisites for healthcheck
+RUN apt-get update && apt-get install -y \    
+    curl && \
+    rm -rf /var/lib/apt/lists/*
+
+# for debug container, also install apt packages unzip procps \
+# And add this line:
+# RUN curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l ~/vsdbg
+
+RUN useradd -ms /bin/bash moduleuser
+USER moduleuser
+
+# The OCI Spec Labels https://github.com/opencontainers/image-spec/blob/main/annotations.md
+LABEL org.opencontainers.image.base.name=mcr.microsoft.com/dotnet/aspnet:6.0-bullseye-slim
+LABEL org.opencontainers.image.vendor="customer"
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS publish-stage
+WORKDIR /src
+COPY . ./
+
+# Publish this module
+RUN dotnet publish ./iotEdge/modules/module1 -c Release -o /src/out
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+FROM publish-stage AS test-stage
+RUN dotnet restore ./iotEdge/modules/module1.IntegrationTest
+RUN dotnet restore ./iotEdge/modules/module1.Test
+
+RUN dotnet test ./iotEdge/modules/module1.IntegrationTest -c Release --logger "console;verbosity=detailed" --logger "trx" --results-directory /src/testresults
+RUN dotnet test ./iotEdge/modules/module1.Test -c Release --logger "console;verbosity=detailed" --logger "trx" --results-directory /src/testresults
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+FROM scratch as export-test-results
+# it is possible to export the files to dockerhost with: DOCKER_BUILDKIT=1 docker build --target export-test-results --output type=local,dest=testresults --progress=plain .
+COPY --from=test-stage /src/testresults/*.trx ./
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+FROM base as final
+COPY --from=publish-stage /src/out ./
+
+ENTRYPOINT ["dotnet", "module1.dll"]
