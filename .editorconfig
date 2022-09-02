@@ -80,9 +80,14 @@ end_of_line = lf
 [Jenkinsfile]
 end_of_line = lf
 
+
 ##########################################
-# Default .NET Code Style 
-# see examples https://github.com/RehanSaeed/EditorConfig/blob/main/.editorconfig
+# .NET Coding Conventions
+##########################################
+[*.{cs,vb}]
+# see: https://docs.microsoft.com/en-us/visualstudio/ide/create-portable-custom-editor-options?view=vs-2022#supported-settings
+# Default .NET Code Style
+# see https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/code-style-rule-options
 ##########################################
 
 # Organize usings
