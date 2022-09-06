@@ -22,7 +22,7 @@ parser.add_argument("-p", "--directoryBuildPropsFile",
                     default=f"{scriptFolderPath}/Directory.Build.props",
                     type=argparse.FileType("r", encoding="UTF-8"), # Returns a open file
                     required=False)
-parser.add_argument("-r", "--registry", 
+parser.add_argument("-r", "--registry",
                     help="The docker registry to deploy the image. It will override the value in the Directory.Build.props file under the node ImageRepository.",
                     type=str,
                     required=False)
@@ -32,7 +32,7 @@ parser.add_argument("--acrlogin",
                     required=False)
 parser.add_argument("-s", "--subscription",
                     help="Azure subscription Name or ID to use for deploy resources. You can read the subscirptions by using `az account list`. You can configure the default subscription using `az account set -s NAME_OR_ID`.",
-                    type=str, 
+                    type=str,
                     required=False)
 
 args = parser.parse_args()
@@ -49,7 +49,7 @@ if args.subscription:
 
 # Read parameter file
 directoryBuildPropsTree = ElementTree()
-directoryBuildPropsTree.parse(args.directoryBuildPropsFile) 
+directoryBuildPropsTree.parse(args.directoryBuildPropsFile)
 xmlElements = directoryBuildPropsTree.getroot().find('PropertyGroup')
 xmlDict = {}
 for item in xmlElements:

@@ -26,7 +26,7 @@ parser.add_argument("-p", "--directoryBuildPropsFile",
                     default=f"{scriptFolderPath}/Directory.Build.props",
                     type=argparse.FileType("r", encoding="UTF-8"), # Returns a open file
                     required=False)
-parser.add_argument("-r", "--registry", 
+parser.add_argument("-r", "--registry",
                     help="The docker registry to deploy the image. It will override the value in the Directory.Build.props file under the node ImageRepository.",
                     type=str,
                     required=False)
@@ -36,9 +36,9 @@ parser.add_argument("-f", "--file",
                     type=argparse.FileType("r", encoding="UTF-8"), # Returns a open file
                     required=False)
 parser.add_argument("-c", "--context",
-                    help="The build context relative to this scripts folder. Default is ./",
-                    default="./",
-                    type=str, 
+                    help="The build context relative to this scripts folder. Default is ./../../",
+                    default="./../../",
+                    type=str,
                     required=False)
 parser.add_argument("--pull",
                     help="Always attempt to pull a newer version of the image",
@@ -58,7 +58,7 @@ parser.add_argument("--testresultsCopy",
 parser.add_argument("--testresultsOutPath",
                     help="copy the testresults to the local path. Default is the testresults in this scriptfolder.",
                     default=f"{scriptFolderPath}/testresults",
-                    type=str, 
+                    type=str,
                     required=False)
 args = parser.parse_args()
 
@@ -69,7 +69,7 @@ print(f"Use directoryBuildPropsFile='{args.directoryBuildPropsFile.name}'")
 
 # Read parameter file
 directoryBuildPropsTree = ElementTree()
-directoryBuildPropsTree.parse(args.directoryBuildPropsFile) 
+directoryBuildPropsTree.parse(args.directoryBuildPropsFile)
 xmlElements = directoryBuildPropsTree.getroot().find('PropertyGroup')
 xmlDict = {}
 for item in xmlElements:
@@ -105,7 +105,7 @@ completeImageNameTagged = f"{completeImageName}:{buildVersion}"
 
 print(f"Building image={completeImageNameTagged} using following parameters: buildDate={buildDate}; product={product}; imageMaintainer={imageMaintainer}")
 
-exe = "docker"
+exe = "DOCKER_BUILDKIT=1 docker"
 pullArgument = "--pull " if args.pull == True else ""
 noCacheArgument = "--no-cache " if args.no_cache == True else ""
 
@@ -115,6 +115,9 @@ print("╔═══════════════════════�
 print("║                     Build Container                      ║")
 print("╚══════════════════════════════════════════════════════════╝")
 buildArgs = ("build "
+    "--progress=plain "
+    f"{pullArgument}"
+    f"{noCacheArgument}"
     f"--tag {completeImageNameTagged} "
     f"--build-arg BUILD_VERSION={buildVersion} "
     f"--build-arg BUILD_DATE={buildDate} "
