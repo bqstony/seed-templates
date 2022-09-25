@@ -80,6 +80,12 @@ end_of_line = lf
 [Jenkinsfile]
 end_of_line = lf
 
+# Terraform Files -> https://www.terraform.io/language/files#text-encoding
+[*.tf]
+charset = utf-8
+indent_size = 2
+tab_width = 2
+end_of_line = lf
 
 ##########################################
 # .NET Coding Conventions
