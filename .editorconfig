@@ -1,5 +1,5 @@
 # Author: michael.helfenstein@noser.com
-# Updated: 2022-09-02
+# Updated: 2023-07-13
 # This File is based on See  https://github.com/RehanSaeed/EditorConfig
 # See http://EditorConfig.org for more information about .editorconfig files.
 
@@ -81,7 +81,7 @@ end_of_line = lf
 end_of_line = lf
 
 # Terraform Files -> https://www.terraform.io/language/files#text-encoding
-[*.tf]
+[*.{tf,tfvars,tfstate,hcl}]
 charset = utf-8
 indent_size = 2
 tab_width = 2
