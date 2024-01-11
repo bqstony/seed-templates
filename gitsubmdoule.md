@@ -12,7 +12,7 @@ git submodule add -f -b master --name dotnet-lib https://dev.azure.com/company/r
 ```
 
 This creates a file named `.gitmodules` with the entry:
-
+    
 ```
 [submodule "dotnet-lib"]
 	path = Source/submodules/dotnet-lib

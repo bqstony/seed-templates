@@ -1,5 +1,5 @@
 # Author: michael.helfenstein@noser.com
-# Updated: 2022-09-02
+# Updated: 2024-01-11
 # Handle the Line Endings in git correctly
 # see: https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings#per-repository-settings
 #
@@ -16,6 +16,13 @@
 *.azcli text eol=lf
 *.sh text eol=lf
 Jenkinsfile text eol=lf
+*.Jenkinsfile text eol=lf
+# Terraform stuff
+*.tf text eol=lf
+*.tfvars text eol=lf
+*.tfstate text eol=lf
+*.hcl text eol=lf
+
 
 # Denote all files that should not have line endings normalized, should not be
 # merged, and should not show in a textual diff.
