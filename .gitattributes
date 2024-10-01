@@ -1,5 +1,5 @@
 # Author: michael.helfenstein@noser.com
-# Updated: 2024-01-11
+# Updated: 2024-10-01
 # Handle the Line Endings in git correctly
 # see: https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings#per-repository-settings
 #
@@ -22,7 +22,10 @@ Jenkinsfile text eol=lf
 *.tfvars text eol=lf
 *.tfstate text eol=lf
 *.hcl text eol=lf
-
+# https://github.com/VerifyTests stuff
+*.verified.txt text eol=lf working-tree-encoding=UTF-8
+*.verified.xml text eol=lf working-tree-encoding=UTF-8
+*.verified.json text eol=lf working-tree-encoding=UTF-8
 
 # Denote all files that should not have line endings normalized, should not be
 # merged, and should not show in a textual diff.

@@ -87,6 +87,16 @@ indent_size = 2
 tab_width = 2
 end_of_line = lf
 
+# https://github.com/VerifyTests settings
+[*.{received,verified}.{json,txt,xml}]
+charset = "utf-8-bom"
+end_of_line = lf
+indent_size = unset
+indent_style = unset
+insert_final_newline = false
+tab_width = unset
+trim_trailing_whitespace = false
+
 ##########################################
 # .NET Coding Conventions
 ##########################################
