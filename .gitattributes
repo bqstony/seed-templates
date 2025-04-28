@@ -40,3 +40,4 @@ Jenkinsfile text eol=lf
 *.xps binary
 *.dll binary
 *.exe binary
+*.pdf binary
